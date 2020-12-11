@@ -43,8 +43,7 @@ Sort key: -
     `ACCESS_KEY: AKXXXXXXXXXXXXXXXXRQ`  
     `SECRET_KEY: ShT7XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXEqm`
     
-2. Get the marketplaces/regions you sell in https://docs.developer.amazonservices.com/en_US/dev_guide/DG_Endpoints
-.html  
+2. Get the marketplaces/regions you sell in https://docs.developer.amazonservices.com/en_US/dev_guide/DG_Endpoints.html  
     *Example:*  
     `US: ATVPDKIKX0DER`  
     `CA: A2EUQ1WTGCTBG2`
@@ -62,4 +61,4 @@ Sort key: -
 4. Customize AWS region in *serverless.yml* under *region* (default is *us-east-1*)
 4. Deploy the stack by running `serverless deploy`
 5. Enjoy your notifications in Slack 🎉  
-![Slack Notification](https://github.com/norus/mws-orders-slack/raw/master/slack_notification.png)
+![Slack Notification](https://github.com/norus/mws-orders-slack/raw/master/slack_notification.png | width=250)
