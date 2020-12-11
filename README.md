@@ -61,4 +61,4 @@ Sort key: -
 4. Customize AWS region in *serverless.yml* under *region* (default is *us-east-1*)
 4. Deploy the stack by running `serverless deploy`
 5. Enjoy your notifications in Slack 🎉  
-![Slack Notification](https://github.com/norus/mws-orders-slack/raw/master/slack_notification.png | width=250)
+[[https://github.com/norus/mws-orders-slack/raw/master/slack_notification.png | width=250px]]
