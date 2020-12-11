@@ -71,7 +71,7 @@ def main(event, context):
                     },
                     UpdateExpression="set failed = :f",
                     ExpressionAttributeValues={
-                            ':f': 'true',
+                            ':f': True,
                     },
                     ReturnValues="UPDATED_NEW"
                 )
