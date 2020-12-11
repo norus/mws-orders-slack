@@ -1,0 +1,12 @@
+{
+  "name": "mws-orders-slack",
+  "description": "Check Amazon MWS for new orders and send Slack notifications",
+  "version": "0.1.0",
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-create-global-dynamodb-table": "^3.0.0",
+    "serverless-dynamodb-autoscaling": "^0.6.2",
+    "serverless-pseudo-parameters": "^2.5.0",
+    "serverless-python-requirements": "^5.1.0"
+  }
+}

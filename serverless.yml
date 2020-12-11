@@ -1,0 +1,85 @@
+service: mws-orders
+
+plugins:
+  - serverless-python-requirements
+  - serverless-pseudo-parameters
+
+package:
+  exclude:
+    - node_modules/**
+    - .idea/**
+    - .serverless/**
+    - venv/**
+    - LICENSE
+    - README.md
+    - package.json
+    - package-lock.json
+    - requirements.txt
+    - slack_notification.png
+    - systems_manager.png
+
+provider:
+  name: aws
+  runtime: python3.8
+  region: eu-west-1
+  environment:
+    MWS_ACCESS_KEY: ${ssm:/mws-access-key~true}
+    MWS_SECRET_KEY: ${ssm:/mws-secret-key~true}
+    MWS_SELLER_ID: ${ssm:/mws-seller-id~true}
+    MWS_MARKET_ID: ATVPDKIKX0DER, A2EUQ1WTGCTBG2, A1AM78C64UM0Y8, A2Q3Y263D00KWC
+    MWS_REGION: US
+    DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    WEBHOOK_URL: ${ssm:/webhook-url~true}
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+        - dynamodb:ListStreams
+        - dynamodb:DescribeStream
+        - dynamodb:GetRecords
+        - dynamodb:GetShardIterator
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:#{AWS::AccountId}:table/${self:provider.environment.DYNAMODB_TABLE}"
+    - Effect: "Allow"
+      Action:
+        - lambda:InvokeFunction
+      Resource: "arn:aws:lambda:${opt:region, self:provider.region}:#{AWS::AccountId}:function:${self:service}-${self:provider.stage}-orders"
+
+functions:
+  orders:
+    handler: orders/handler.main
+    events:
+      - schedule:
+          # Checks for new orders every 5 minutes
+          name: mws-orders-check
+          rate: rate(5 minutes)
+
+  webhook:
+    handler: webhook/handler.main
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt:
+              - MwsOrdersTable
+              - StreamArn
+
+resources:
+  Resources:
+    MwsOrdersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: order_id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: order_id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
+        TableName: ${self:provider.environment.DYNAMODB_TABLE}
